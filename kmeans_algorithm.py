@@ -172,3 +172,86 @@ for iter_j in range(1, max_iter + 1):
 
 plot_clusters_grid(X, results, current_seed)
 
+
+
+
+
+def plot_representatives_and_samples(centroids, data, labels, n_samples=1):
+    """
+    Muestra cada centroide como imagen, junto con un ejemplo del conjunto de datos que fue asignado a él.
+    """
+    plt.figure(figsize=(14, 8))
+    for i, centroid in enumerate(centroids):
+        plt.subplot(4, 10, 2*i + 1)
+        plt.imshow(centroid.reshape(28, 28), cmap='gray')
+        plt.title(f'Centroide {i}', fontsize=8)
+        plt.axis('off')
+
+        assigned_points = data[labels == i]
+        if len(assigned_points) > 0:
+            plt.subplot(4, 10, 2*i + 2)
+            plt.imshow(assigned_points[0].reshape(28, 28), cmap='gray')
+            plt.title('Ejemplo', fontsize=8)
+            plt.axis('off')
+
+    plt.tight_layout()
+    plt.savefig("mnist_centroids_and_examples.png")
+
+
+def plot_objective(objective_history, figsize=(10, 5)):
+    plt.figure(figsize=figsize)
+    sns.set_style("darkgrid")
+    ax = plt.gca()
+    plt.plot(
+        objective_history,
+        marker='o',
+        markersize=6,
+        markerfacecolor='#FF6B6B',
+        markeredgecolor='white',
+        color='#4E79A7',
+        linewidth=2
+    )
+    plt.title('Convergencia de la función objetivo $J^{clust}$', fontsize=14, pad=20)
+    plt.xlabel('Iteración', fontsize=12)
+    plt.ylabel('Valor de la función objetivo', fontsize=12)
+    ax.grid(True, linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.savefig("mnist_objective_curve.png")
+
+from tensorflow.keras.datasets import mnist
+
+# Cargar MNIST desde Keras
+(X_train, y_train), (_, _) = mnist.load_data()
+
+# Aplanar imágenes y normalizar
+X = X_train.reshape((X_train.shape[0], -1)).astype(np.float32) / 255.0
+
+# Seleccionar una muestra pequeña (opcional para rapidez)
+sample_size = 10000
+X = X[:sample_size]
+
+# Semilla reproducible
+current_seed = 0
+np.random.seed(current_seed)
+k = 20
+Z0 = X[np.random.choice(X.shape[0], k, replace=False)]
+
+# Ejecutar algoritmo
+max_iter = 6
+results = {}
+
+# Ejecutar k-means con 15 iteraciones
+centroids, labels, objective_history = k_means_fit(X, Z0, 15)
+
+# Gráfico de convergencia de la función objetivo
+plot_objective(objective_history)
+
+# Gráfico de centroides y ejemplos
+plot_representatives_and_samples(centroids, X, labels)
+
+
+
+
+
+
+

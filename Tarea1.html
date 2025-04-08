@@ -13649,12 +13649,12 @@ plot_clusters_grid(X, results, current_seed)
 
 
 <div class="tcolorbox">
-  <img src="kmeans_seed0.png" style="width: 100%;" alt="Figura 3">
+  <img src="https://raw.githubusercontent.com/bahidalgo/MIA_Fundamentos-Matematicos-para-la-IA/refs/heads/main/kmeans_seed0.png" style="width: 80%;" alt="Figura 3">
   <p><small><strong>Figura 1.</strong> K-Means: Evolución de clustering en función de las iteraciones (Seed: 0).</small></p>
 </div>
 
 
-<p>A partir de los resultados evidenciados en la <em>Figura 1</em>, se puede confirmar que desde la iteración 4
+<p style="text-align: justify;">A partir de los resultados evidenciados en la <em>Figura 1</em>, se puede confirmar que desde la iteración 4
 en adelante, no se presentan cambios significativos, por ende, parece ser
 que la cantidad de iteraciones suficientes es 4.
 
@@ -13666,15 +13666,54 @@ $ distinto del anterior, se obtienen los siguientes resultados:</p>
 
 
 <div class="tcolorbox">
-  <img src="kmeans_seed100.png" style="width: 100%;" alt="Figura 3">
+  <img src="https://raw.githubusercontent.com/bahidalgo/MIA_Fundamentos-Matematicos-para-la-IA/refs/heads/main/kmeans_seed100.png" style="width: 80%;" alt="Figura 3">
   <p><small><strong>Figura 2.</strong> K-Means: Evolución de clustering en función de las iteraciones (Seed: 100).</small></p>
 </div>
 
 
-<p>En la <em>Figura 2</em>, se aprecia que la convergencia se obtiene en la tercera iteración y que los grupos formados son diferentes a los clústeres del primer intento. Por lo tanto, se recomienda utilizar múltiples ejecuciones con diferentes inicializaciones y seleccionar aquella que minimice la función objetivo $J_{clust}$.</p>
+<p style="text-align: justify;">En la <em>Figura 2</em>, se aprecia que la convergencia se obtiene en la tercera iteración y que los grupos formados son diferentes a los clústeres del primer intento. Por lo tanto, se recomienda utilizar múltiples ejecuciones con diferentes inicializaciones y seleccionar aquella que minimice la función objetivo $J_{clust}$.</p>
 
 
 </details>
+
+
+
+
+
+<p style="text-align: justify;"><strong>c) </strong>Use la base de datos de imágenes de dígitos de <code>MNIST</code> 
+  para testear su algoritmo con $k = 20$ representantes. Grafique cada representante y uno de los datos asignados a dicho clúster.  Grafique el comportamiento de la función objetivo $J_{\text{clust}}$ en función del número de iteraciones y discuta el número de iteraciones adecuado para el <em>clustering</em>.
+</p>
+
+
+
+<details>
+  <summary><span class="arrow">▶️</span> Ver gráficos</summary>
+  
+<div class="tcolorbox">
+
+  
+  <pre><code class="language-python">
+plot_clusters_grid(X, results, current_seed)
+</code></pre>
+</div>
+
+<div class="tcolorbox">
+  <img src="https://raw.githubusercontent.com/bahidalgo/MIA_Fundamentos-Matematicos-para-la-IA/refs/heads/main/kmeans_seed100.png" style="width: 80%;" alt="Figura 3">
+  <p><small><strong>Figura 3.</strong> K-Means: Evolución de clustering en función de las iteraciones (Seed: 100).</small></p>
+</div>
+
+
+<p style="text-align: justify;">En la <em>Figura 2</em>, se aprecia que la convergencia se obtiene en la tercera iteración y que los grupos formados son diferentes a los clústeres del primer intento. Por lo tanto, se recomienda utilizar múltiples ejecuciones con diferentes inicializaciones y seleccionar aquella que minimice la función objetivo $J_{clust}$.</p>
+
+
+</details>
+
+
+
+
+
+
+
 
 
 
