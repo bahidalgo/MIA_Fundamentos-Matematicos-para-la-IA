@@ -13450,8 +13450,8 @@ $$
   $$
 </div>
 
-
 <div class="tcolorbox">
+  <p>Así, la función que permite representar este algoritmo se puede escribir como: </p>
 
   <pre><code class="language-python">
   def k_means_fit(X, Z0, NITERMAX):
@@ -13698,13 +13698,14 @@ plot_clusters_grid(X, results, current_seed)
 </div>
 
 <div class="tcolorbox">
-  <img src="https://raw.githubusercontent.com/bahidalgo/MIA_Fundamentos-Matematicos-para-la-IA/refs/heads/main/kmeans_seed100.png" style="width: 80%;" alt="Figura 3">
-  <p><small><strong>Figura 3.</strong> K-Means: Evolución de clustering en función de las iteraciones (Seed: 100).</small></p>
+  <img src="https://raw.githubusercontent.com/bahidalgo/MIA_Fundamentos-Matematicos-para-la-IA/refs/heads/main/mnist_centroids_and_examples.png" style="width: 80%;" alt="Figura 3">
+  <p><small><strong>Figura 3.</strong> Grupo de clústeres generados sobre la base de datos MNIST, en
+    donde se puede ver el representante junto a uno sus datos asignados a dicho
+    clúster (Seed: 0).</small></p>
 </div>
 
 
-<p style="text-align: justify;">En la <em>Figura 2</em>, se aprecia que la convergencia se obtiene en la tercera iteración y que los grupos formados son diferentes a los clústeres del primer intento. Por lo tanto, se recomienda utilizar múltiples ejecuciones con diferentes inicializaciones y seleccionar aquella que minimice la función objetivo $J_{clust}$.</p>
-
+<p style="text-align: justify;">Una forma de comprender los representantes es que aquellos que tengan peor visibilidad (más borroso), implica una mayor varianza interna del clúster, en caso contrario, mientras más sencillo de visualizar sea el representante, entonces menor es la varianza interna y por ende, mejor es el grupo clasificado. Esto nos indica, por ejemplo, que el representante 16 posee una mayor variabilidad debido a que no es sencillo identificar a qué número representa su clúster asociado.</p>
 
 </details>
 

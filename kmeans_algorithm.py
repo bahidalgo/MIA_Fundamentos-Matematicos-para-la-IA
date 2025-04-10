@@ -29,6 +29,32 @@ def k_means_fit(X, Z0, NITERMAX):
 
     return centroids, labels, objective_history
 
+
+def plot_objective(objective_history, data_label, figsize=(10, 5)):
+    plt.figure(figsize=figsize)
+    sns.set_style("darkgrid")
+    ax = plt.gca()
+    
+    x_values = list(range(1, len(objective_history) + 1))  # Start from 1 instead of 0
+    
+    plt.plot(
+        x_values,
+        objective_history,
+        marker='o',
+        markersize=6,
+        markerfacecolor='#FF6B6B',
+        markeredgecolor='white',
+        color='#4E79A7',
+        linewidth=2
+    )
+    title = 'Convergencia de la función objetivo $J^{clust}$ para datos'
+    plt.title(f'{title} {data_label}', fontsize=14, pad=20)
+    plt.xlabel('Iteración', fontsize=12)
+    plt.ylabel('Valor de la función objetivo', fontsize=12)
+    ax.grid(True, linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.savefig(f"mnist_objective_curve_{data_label}.png")
+
 # Gráfico de los clústeres
 
 def plot_clusters_grid(data, results, current_seed):
@@ -172,7 +198,8 @@ for iter_j in range(1, max_iter + 1):
 
 plot_clusters_grid(X, results, current_seed)
 
-
+# Gráfico de convergencia de la función objetivo
+plot_objective(objective_history, "datakmeans")
 
 
 
@@ -198,25 +225,7 @@ def plot_representatives_and_samples(centroids, data, labels, n_samples=1):
     plt.savefig("mnist_centroids_and_examples.png")
 
 
-def plot_objective(objective_history, figsize=(10, 5)):
-    plt.figure(figsize=figsize)
-    sns.set_style("darkgrid")
-    ax = plt.gca()
-    plt.plot(
-        objective_history,
-        marker='o',
-        markersize=6,
-        markerfacecolor='#FF6B6B',
-        markeredgecolor='white',
-        color='#4E79A7',
-        linewidth=2
-    )
-    plt.title('Convergencia de la función objetivo $J^{clust}$', fontsize=14, pad=20)
-    plt.xlabel('Iteración', fontsize=12)
-    plt.ylabel('Valor de la función objetivo', fontsize=12)
-    ax.grid(True, linestyle='--', alpha=0.7)
-    plt.tight_layout()
-    plt.savefig("mnist_objective_curve.png")
+
 
 from tensorflow.keras.datasets import mnist
 
@@ -244,7 +253,7 @@ results = {}
 centroids, labels, objective_history = k_means_fit(X, Z0, 15)
 
 # Gráfico de convergencia de la función objetivo
-plot_objective(objective_history)
+plot_objective(objective_history, "MNIST")
 
 # Gráfico de centroides y ejemplos
 plot_representatives_and_samples(centroids, X, labels)
