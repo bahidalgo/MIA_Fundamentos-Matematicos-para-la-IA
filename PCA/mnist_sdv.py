@@ -44,7 +44,7 @@ X_reconstruido = X_reducido @ Vt[:k]
 # Graficar las primeras 10 imágenes originales y sus proyecciones
 fig, axs = plt.subplots(2, 10, figsize=(15, 4))
 for i in range(10):
-    axs[0, i].imshow(X_centered[i].reshape(28, 28), cmap='gray')
+    axs[0, i].imshow(X[i].reshape(28, 28), cmap='gray')
     axs[0, i].axis('off')
     axs[0, i].set_title("Original")
 
@@ -54,3 +54,74 @@ for i in range(10):
 
 plt.tight_layout()
 plt.savefig("mnist_pca32.png")
+
+
+
+
+
+
+
+
+
+
+
+# Parte d)
+
+def k_means_fit(X, Z0, NITERMAX):
+    centroids = Z0.copy()
+    objective_history = []
+
+    for _ in range(NITERMAX):
+        data = X[:, np.newaxis]
+        distances = np.linalg.norm(data - centroids, axis=2)  # ← cálculo de distancias
+        labels = np.argmin(distances, axis=1)                 # ← asignación de clústeres
+
+        for k in range(centroids.shape[0]):
+            if np.any(labels == k):
+                centroids[k] = X[labels == k].mean(axis=0)    # ← actualización de centroides
+
+        mu_z = centroids[labels]
+        current_objective = np.mean((X - mu_z) ** 2)          # ← evaluación de función objetivo
+        objective_history.append(current_objective)
+
+    return centroids, labels, objective_history
+
+def plot_representatives_and_samples(centroids, data, labels, n_samples=1):
+    """
+    Muestra cada centroide como imagen, junto con un ejemplo del conjunto de datos que fue asignado a él.
+    """
+    plt.figure(figsize=(14, 8))
+    for i, centroid in enumerate(centroids):
+        plt.subplot(4, 10, 2*i + 1)
+        plt.imshow(centroid.reshape(28, 28), cmap='gray')
+        plt.title(f'Centroide {i}', fontsize=8)
+        plt.axis('off')
+
+        assigned_points = data[labels == i]
+        if len(assigned_points) > 0:
+            plt.subplot(4, 10, 2*i + 2)
+            plt.imshow(assigned_points[0].reshape(28, 28), cmap='gray')
+            plt.title('Ejemplo', fontsize=8)
+            plt.axis('off')
+
+    plt.tight_layout()
+    plt.savefig("mnist_centroids_and_examples.png")
+
+
+
+# Semilla reproducible
+current_seed = 0
+np.random.seed(current_seed)
+k = 20
+Z0 = X_reconstruido[np.random.choice(X.shape[0], k, replace=False)]
+
+# Ejecutar algoritmo
+max_iter = 6
+results = {}
+
+# Ejecutar k-means con 15 iteraciones
+centroids, labels, objective_history = k_means_fit(X_reconstruido, Z0, 15)
+
+
+# Gráfico de centroides y ejemplos
+plot_representatives_and_samples(centroids, X_reconstruido, labels)
