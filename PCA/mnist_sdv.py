@@ -113,7 +113,7 @@ def plot_representatives_and_samples(centroids, data, labels, n_samples=1):
 current_seed = 0
 np.random.seed(current_seed)
 k = 20
-Z0 = X_reconstruido[np.random.choice(X.shape[0], k, replace=False)]
+Z0 = X_reconstruido[np.random.choice(X_reconstruido.shape[0], k, replace=False)]
 
 # Ejecutar algoritmo
 max_iter = 6
