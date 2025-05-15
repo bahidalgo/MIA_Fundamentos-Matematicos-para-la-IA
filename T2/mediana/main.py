@@ -77,5 +77,14 @@ def visualizar_fallos_como_conteo(n=100, repeticiones=1000):
     return promedio_acumulado[-1], cota_teorica
 
 # Ejecutar visualización y mostrar últimos valores
-promedio_final, cota = visualizar_fallos_como_conteo()
-print(promedio_final, cota)
+#promedio_final, cota = visualizar_fallos_como_conteo()
+#print(promedio_final, cota)
+
+
+
+
+
+S = [4, 6, 8, 2, 1, 6, 0, 9, 4]
+m, f = mediana_aleatoria_con_fallos(S)
+print(f"La mediana de la lista {S} es:")
+print(m)
