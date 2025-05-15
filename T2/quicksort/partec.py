@@ -72,40 +72,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
-# --- reutilizar función random_quicksort ya definida ---
-def random_quicksort(S):
-    if len(S) <= 1:
-        return S, 0
-    pivot_index = random.randint(0, len(S) - 1)
-    x = S[pivot_index]
-    comparisons = 0
-    S1 = []
-    S2 = []
-    for i in range(len(S)):
-        if i != pivot_index:
-            comparisons += 1
-            if S[i] < x:
-                S1.append(S[i])
-            else:
-                S2.append(S[i])
-    sorted_S1, comp1 = random_quicksort(S1)
-    sorted_S2, comp2 = random_quicksort(S2)
-    total_comparisons = comparisons + comp1 + comp2
-    return sorted_S1 + [x] + sorted_S2, total_comparisons
-
-# --- función para calcular promedio de comparaciones ---
-def promedio_comparaciones(n, repeticiones=100):
-    """
-    Calcula el promedio de comparaciones realizadas por Random Quicksort
-    al ordenar listas aleatorias de tamaño n.
-    """
-    total_comparaciones = 0
-    for _ in range(repeticiones):
-        lista = random.sample(range(n * 10), n)
-        _, comps = random_quicksort(lista)
-        total_comparaciones += comps
-    return total_comparaciones / repeticiones
-
 # --- parte (c): recorrer distintos tamaños ---
 n_values = list(range(100, 5100, 100))  # [100, 200, ..., 5000]
 empirico = []  # comparaciones promedio reales

@@ -13653,8 +13653,36 @@ print(f"Promedio de comparaciones para n = {n_fijo}: {prom:.2f}")
 
   
     <pre><code class="language-python">
-  
+import numpy as np
+import matplotlib.pyplot as plt
+import math
 
+# --- parte (c): recorrer distintos tamaños ---
+n_values = list(range(100, 5100, 100))  # [100, 200, ..., 5000]
+empirico = []  # comparaciones promedio reales
+teorico_ln = []  # 2n ln(n)
+teorico_lin = []  # 2n
+
+for n in n_values:
+    print(f"Calculando para n = {n}...")
+    prom = promedio_comparaciones(n, repeticiones=50)  # puedes aumentar a 100
+    empirico.append(prom)
+    teorico_ln.append(2 * n * math.log(n))
+    teorico_lin.append(2 * n)
+
+# --- graficar ---
+plt.figure(figsize=(10, 6))
+plt.plot(n_values, empirico, label="Comparaciones promedio (experimental)", marker='o')
+plt.plot(n_values, teorico_ln, label=r"$2n\ln(n)$ (teórico)", linestyle='--')
+plt.plot(n_values, teorico_lin, label=r"$2n$ (lineal)", linestyle=':')
+plt.xlabel("Tamaño de la lista $n$")
+plt.ylabel("Número de comparaciones")
+plt.title("Random Quicksort: Comparaciones vs Tamaño de entrada")
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+filename = "Random_Quicksort_comparison.jpg"
+plt.savefig(filename)
   </code></pre>
   </div>
 
@@ -13666,41 +13694,21 @@ print(f"Promedio de comparaciones para n = {n_fijo}: {prom:.2f}")
   
 
 <div class="tcolorbox">
-  <img src="https://raw.githubusercontent.com/bahidalgo/MIA_Fundamentos-Matematicos-para-la-IA/refs/heads/main/mnist_centroids_and_examples.png" style="width: 80%;" alt="Figura 4">
-  <p><small><strong>Figura 1.</strong> Grupo de clústeres generados sobre la base de datos MNIST, en
-    donde se puede ver el representante junto a uno sus datos asignados a dicho
-    clúster (Seed: 0).</small></p>
+  <img src="https://raw.githubusercontent.com/bahidalgo/MIA_Fundamentos-Matematicos-para-la-IA/refs/heads/main/T2/quicksort/Random_Quicksort_comparison.jpg" style="width: 80%;" alt="Figura 4">
+  <p><small><strong>Figura 1.</strong> Comparación entre el número promedio de comparaciones realizadas por el algoritmo Random Quicksort (línea con círculos) y las funciones teóricas
+    $y = 2nln(n)$ y $y = 2n$.</small></p>
 </div>
 
 
-<p style="text-align: justify;">Una forma de comprender los representantes es que aquellos que tengan peor visibilidad (más borroso), implica una mayor varianza interna del clúster, en caso contrario, mientras más sencillo de visualizar sea el representante, entonces menor es la varianza interna y por ende, mejor es el grupo clasificado. Esto indica, por ejemplo, que el clúster asociado al representante 16 posee una mayor variabilidad debido a que no es sencillo identificar a qué número representa su grupo.</p>
-
-
-<div class="tcolorbox">
-  <img src="https://raw.githubusercontent.com/bahidalgo/MIA_Fundamentos-Matematicos-para-la-IA/refs/heads/main/mnist_objective_curve_MNIST.png" style="width: 80%;" alt="Figura 5">
-  <p><small><strong>Figura 5.</strong> Convergencia de la función 
-    objetivo para el dataset MNIST.</small></p>
-</div>
-
-
-<div class="tcolorbox">
-  <p style="text-align: justify;">
-    De forma análoga al ejercicio anterior, se puede deducir en
-    base a la <em>Figura 5</em>, que la cantidad de iteraciones suficientes tal
-    que minimiza  $J_{clust}$ corresponde a 5 aproximadamente. El
-    argumento es el mismo anterior, pues no hay cambios significativos en la curva
-    a partir de dicho estado.
-  </p>
-</div>
-
+<p style="text-align: justify;">Se observa que el comportamiento empírico sigue estrechamente la tendencia de 
+$y = 2nln(n)$, confirmando la estimación teórica del número esperado de comparaciones. La función  $y = 2n$, mucho más baja, sirve como referencia para ilustrar que el crecimiento no es lineal..</p>
 
 </details>
 
 
 
 
-<p style="text-align: justify;"><strong>d) </strong>Discuta porque el algoritmo de <code>k−means</code> converge, es decir, ¿es seguro que de una iteración a la
-  siguiente la función objetivo decrece?</p>
+<p style="text-align: justify;"><strong>d) </strong>Explique porque los resultados del experimento corroboran los resultados teóricos</p>
 
 
 
@@ -13708,81 +13716,34 @@ print(f"Promedio de comparaciones para n = {n_fijo}: {prom:.2f}")
   
     <summary><span class="arrow">▶️</span> Ver respuesta</summary>
     
-    
-    <div class="tcolorbox">
-      <p style="text-align: justify;"><strong>Explicación:</strong><br>
-      Dado el tercer paso mencionado en la sección 2.a, el algoritmo <em>k-means</em> garantiza la convergencia debido
-    a que la función objetivo es descendente. </p>
-    
-      <p style="text-align: justify;"><strong>Recordando la evaluación de la función objetivo, se tiene:</strong></p>
-      $$
-      J^{(t)} = \frac{1}{n} \sum_{i=1}^{n} \|x_i - \mu_{z_i^{(t)}}\|^2
-      $$
-
-      <p> Donde $z_i$ es:</p>
-
-      $$
-      z_i^{(t)} = \arg\min_{j \in \{1, \dots, k\}} \|x_i - \mu_j^{(t)}\|^2
-      $$
-    </div>
 
     <div class="tcolorbox">
 
     <p style="text-align: justify;">
-    Lo anterior implica que en cada punto $x_i$ se compara todas
-    las posibles distancias a los k posibles centroides. Luego,
-    se escoge el mínimo local del término:
 
-    $$
-    \|x_i - \mu_{z_i^{(t)}}\|^2
-    $$
+Los resultados obtenidos a través del experimento empírico
+corroboran la predicción teórica del comportamiento del algoritmo
+Random Quicksort, establecido en la clase 6, página 50 que indica que el
+número esperado de comparaciones es:
 
-    respecto a $z_i$.
+ $$2n \ln (n) + \mathcal{O}(n)$$
 
-    Por ello, para la iteración siguiente se repetirá el proceso,
-    buscando una asignación para $z_i$ mejor o igual, por ende:
+La Figura 1 indica:
 
-    $$
-    \|x_i - \mu_{z_i^{(t)}}\|^2 \geq \|x_i - \mu_{z_i^{(t + 1)}}\|^2
-    $$
+<ul>
+  <li>
+    El número promedio de comparaciones observadas sigue de cerca la función teórica$ 2n \ln(n)$, con pequeñas variaciones atribuibles al término $ \mathcal{O}(n) $ y a la aleatoriedad del pivote.
+  </li>
+  <li>
+    La curva experimental se mantiene por encima de $ 2n $, descartando un comportamiento lineal y reforzando que la complejidad es$ \mathcal{O}(n \ln n) $.
+  </li>
 
-    Así, para cada iteración, se debe mantener la desigualdad:
+  <li>
+  El experimento fue diseñado para cumplir la hipótesis del teorema: el pivote en cada paso del algoritmo es escogido de forma independiente y uniformemente al azar entre los elementos de la lista.
+</li>
+</ul>
+Por lo tanto, el experimento valida la forma asintótica $ 2n \ln(n) $ y demuestra que el modelo teórico es aplicable en la práctica.
 
-    $$
-    J^{t} \geq J^{t + 1}   \ \  \ \ \forall t \in \mathbb{N}
-    $$
-
-    Por ello, se asegura que la función objetivo decrece. Sin embargo,
-    esto no es suficiente para determinar que en efecto converge, por
-    ello, se debe encontrar una cota inferior, que permita que el límite
-    cuando tienda a dicha cota exista, lo cual sin embargo, es evidente pues
-    dado que la función objetivo es una suma de normas cuadradas se tiene:
-
-    $$
-    J^{t} \geq 0
-    $$
-
-    para todo $t$. Lo que implica, junto a lo anterior, que la sucesión es
-    monótona decreciente y acotada inferiormente. Así se cumple:
-
-    $$
-    \lim_{t \to \infty} J^{(t)} \in \mathbb{R}
-    $$
-
-    Lo que es equivalente a indicar que la función objetivo converge.
-
-    Ahora bien, falta aclarar un último punto, dado que la pregunta hace 
-    alusión a la convergencia del algoritmo y lo demostrado anteriormente
-    corresponde a la convergencia de la sucesión que no es lo mismo. Para
-    esto, es necesario añadir a lo anterior un hecho que permita que el
-    algoritmo se detenga eventualmente en un número finito de pasos.
-
-    Para lo anterior, basta con notar que cada punto $x_i$ se asigna 
-    a uno de los $k$ clústeres posibles, lo que genera como máximo $k^n$
-    posibles asignaciones distintas. Dado que el algoritmo mejora la
-    función objetivo en cada paso, debe existir un número
-    finito de iteraciones en donde el algoritmo
-    se detendrá.
   
     </p>
 
@@ -13799,6 +13760,36 @@ print(f"Promedio de comparaciones para n = {n_fijo}: {prom:.2f}")
 </div>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
     
@@ -13806,142 +13797,130 @@ print(f"Promedio de comparaciones para n = {n_fijo}: {prom:.2f}")
     </div><div class="inner_cell">
     <div class="text_cell_render border-box-sizing rendered_html">
 
-  <p style="text-align: justify;"><strong>3. (5 puntos) Independencia lineal.</strong></p>
+  <p style="text-align: justify;"><strong>3. (10 puntos)  Convexidad.</strong></p>
   <p style="text-align: justify;">
-  Considere una matriz \( A \in \mathbb{R}^{m \times n} \) con \( m > n \) y un vector \( b \in \mathbb{R}^m \).
-  Buscamos el vector solución \( x \in \mathbb{R}^n \) del sistema lineal \( Ax = b \).
-  Describa cómo puede asegurar de forma práctica si la solución del sistema existe o no.
+    Sea \( f : \mathbb{R}^d \to \mathbb{R} \) una función es diferenciable. Pruebe que f es una función convexa si y sólo si se satisface
+
+    $$
+     f(y) \geq f(x) + \nabla f(x)^\top (y - x) 
+    $$
+
+    Para todo \( x, y\) en el dominio de f.
   </p>
   
-  <p style="text-align: justify;">
-  Para el caso \( n = 3 \) y \( m = 4 \), considere el siguiente sistema de ecuaciones:
-  </p>
-  
-  $$
-  \begin{aligned}
-      x + y + z &= 1, \\
-      2x - 3y + 4z &= 1, \\
-      3x + 5y - z &= 1, \\
-      2y - 4z &= -2.
-  \end{aligned}
-  $$
+ 
   
   <details>
   <summary><span class="arrow">▶️</span> Ver respuesta</summary>
   
   <div class="tcolorbox">
-    <p style="text-align: justify;">
-    Una forma práctica de determinar si un sistema \( Ax = b \) tiene solución es verificar si el vector \( b \)
-    pertenece al <em>espacio columna</em> de la matriz \( A \). Esto se puede hacer mediante la reducción por filas de
-    la matriz aumentada \( [A\ |\ b] \), comparando su rango con el de \( A \).
-    </p>
+  La siguiente solución está basada en lo visto en la clase 7, página 29, en
+  donde se demostró la proposición para $D=1$. A continuación, se demostrará
+  el caso general en ambas direcciones:
+  <p><strong> Dirección 1: \( f \) convexa ⟹ desigualdad</strong></p>
+
+  <p>
+    Partimos de la definición de convexidad:
+  </p>
+
+  <p style="text-align:center;">
+    \( f((1 - \theta)x + \theta y) \leq (1 - \theta)f(x) + \theta f(y), \quad \forall \theta \in [0, 1] \)
+  </p>
+
+  <p>Restando $f(x)$ a ambos lados:</p>
+
+  <p style="text-align:center;">
+        \( f((1 - \theta)x + \theta y) - f(x) \leq -\theta f(x) + \theta f(y), \quad \forall \theta \in [0, 1] \)
+
+  </p>
+
+  <p>Reescribiendo:</p>
+
+  <p style="text-align:center;">
+        \( f((1 - \theta)x + \theta y) - f(x) \leq \theta(f(y) - f(x)), \quad \forall \theta \in [0, 1] \)
+  </p>
+
+  <p>Divimos por $\theta$ a ambos lados (considerando $\theta > 0$):</p>
+
+  <p style="text-align:center;">
+    \( \frac{f(x + \theta(y - x)) - f(x)}{\theta} \leq f(y) - f(x) \)
+  </p>
+
+
+
+
+  <p>Tomando el límite cuando \( \theta \to 0^+ \), se tiene la definición de derivada direccional de $f$ expresada en la clase 7, página 17, pero considerando
+    $v=y-x$, es decir se interpreta como la razón de cambio de $f$ en la dirección de $y-x$.
+  </p>
+
+    <p style="text-align:center;">
+    \( \nabla f(x)^\top (y - x) \leq  f(y) - f(x) \)
+
+⟹
+
+    \( f(y) \geq f(x) + \nabla f(x)^\top (y - x) \)
+  </p>
+
+  <hr>
+
+  <p><strong> Dirección 2: Desigualdad ⟹ \( f \) convexa</strong></p>
+
+  <p>
+    Suponiendo que para todo \( x, y \in \text{dom}(f) \) se cumple:
+    \( f(y) \geq f(x) + \nabla f(x)^\top (y - x) \).
+  </p>
+
+  <p>Es necesario demostrar convexidad, es decir:</p>
+
+  <p style="text-align:center;">
+    \( f((1 - \theta)x + \theta y) \leq (1 - \theta)f(x) + \theta f(y) \quad \forall \theta \in [0, 1] \)
+  </p>
+
+  <p>Sea \( z = (1 - \theta)x + \theta y \). Se aplica la desigualdad dos veces:</p>
+
+  <ul>
+    <li>\( f(x) \geq f(z) + \nabla f(z)^\top (x - z) \)</li>
+    <li>\( f(y) \geq f(z) + \nabla f(z)^\top (y - z) \)</li>
+  </ul>
+
+  <p>Existe un truco multiplicando por \( (1 - \theta) \) y \( \theta \), respectivamente, tal y como se ve
+    en la clase 7, página 30. Notar que si se suma
+    la parte izquierda y derecha de cada igualdad, se tiene:</p>
+
+
+  <p style="text-align:center;">
+    \( (1 - \theta)f(x) + \theta f(y) \geq (1 - \theta) f(z) + \theta f(z) + (1 - \theta) \nabla f(z)^\top (x - z) + \theta \nabla f(z)^\top (y - z)  \)
+  </p>
+
+  <p>Desarrollando:</p>
+
+  <p style="text-align:center;">
+    \( (1 - \theta)f(x) + \theta f(y) \geq f(z) + \nabla f(z)^\top (x - z) - \theta \nabla f(z)^\top (x - z) + \theta \nabla f(z)^\top (y - z)  \)
+  </p>
   
-    <p style="text-align: justify;">
-    Según el <a href="#capelli1895">Teorema de Rouché–Capelli</a> (también conocido como Rouché-Frobenius),
-    el sistema es resoluble con valores finitos de las incógnitas si, y solo si,
-    ambas matrices tienen el mismo rango (Capelli, 1895):
-    </p>
-  
-    <ul>
-      <li>Si \( \text{rango}(A) = \text{rango}([A\ |\ b]) \), el sistema es <em>consistente</em>.</li>
-      <li>Si \( \text{rango}(A) \neq \text{rango}([A\ |\ b]) \), el sistema es <em>inconsistente</em>.</li>
-    </ul>
-  
-    <p><strong>Matriz aumentada:</strong></p>
-  
-    $$
-    \left[
-    \begin{array}{ccc|c}
-    1 & 1 & 1 & 1 \\
-    2 & -3 & 4 & 1 \\
-    3 & 5 & -1 & 1 \\
-    0 & 2 & -4 & -2
-    \end{array}
-    \right]
-    $$
-  
-    <p><strong>Paso 1:</strong> Pivote \( A_{11} = 1 \). Multiplicadores:</p>
-    $$
-    \ell_{21} = \frac{2}{1}, \quad \ell_{31} = \frac{3}{1}, \quad \ell_{41} = \frac{0}{1}
-    $$
-  
-    <p>Operaciones:</p>
-    $$
-    \begin{aligned}
-    F_2 &\leftarrow F_2 - \ell_{21} F_1 \\
-    F_3 &\leftarrow F_3 - \ell_{31} F_1 \\
-    F_4 &\leftarrow F_4 - \ell_{41} F_1
-    \end{aligned}
-    $$
-  
-    <p><strong>Resultado:</strong></p>
-    $$
-    \left[
-    \begin{array}{ccc|c}
-    1 & 1 & 1 & 1 \\
-    0 & -5 & 2 & -1 \\
-    0 & 2 & -4 & -2 \\
-    0 & 2 & -4 & -2
-    \end{array}
-    \right]
-    $$
-  
-    <p><strong>Paso 2:</strong> Pivote \( A_{22} = -5 \). Multiplicadores:</p>
-    $$
-    \ell_{32} = \frac{2}{-5}, \quad \ell_{42} = \frac{2}{-5}
-    $$
-  
-    <p>Operaciones:</p>
-    $$
-    \begin{aligned}
-    F_3 &\leftarrow F_3 - \ell_{32} F_2 \\
-    F_4 &\leftarrow F_4 - \ell_{42} F_2
-    \end{aligned}
-    $$
-  
-    <p><strong>Resultado:</strong></p>
-    $$
-    \left[
-    \begin{array}{ccc|c}
-    1 & 1 & 1 & 1 \\
-    0 & -5 & 2 & -1 \\
-    0 & 0 & -\frac{16}{5} & -\frac{12}{5} \\
-    0 & 0 & -\frac{16}{5} & -\frac{12}{5}
-    \end{array}
-    \right]
-    $$
-  
-    <p><strong>Paso 3:</strong> Pivote \( A_{33} = -\frac{16}{5} \)</p>
-    $$
-    \ell_{43} = \frac{-\frac{16}{5}}{-\frac{16}{5}} = 1
-    $$
-  
-    <p>Operación:</p>
-    $$
-    F_4 \leftarrow F_4 - \ell_{43} F_3
-    $$
-  
-    <p><strong>Resultado final:</strong></p>
-    $$
-    \left[
-    \begin{array}{ccc|c}
-    1 & 1 & 1 & 1 \\
-    0 & -5 & 2 & -1 \\
-    0 & 0 & -\frac{16}{5} & -\frac{12}{5} \\
-    0 & 0 & 0 & 0
-    \end{array}
-    \right]
-    $$
-  
-    <p style="text-align: justify;">
-    Se observa que el rango de \( A \) es 3 y el rango de la matriz aumentada también es 3. Por lo tanto, como los rangos coinciden, el sistema tiene solución.
-    </p>
-    <p style="text-align: justify;">
-    Al resolver el sistema triangular por sustitución hacia atrás, se obtiene como solución única:
-\[
-x = -\frac{1}{4}, \quad y = \frac{1}{2}, \quad z = \frac{3}{4}.
-\]
-</p>
+<p>Reordenando:</p>
+
+  <p style="text-align:center;">
+    \( (1 - \theta)f(x) + \theta f(y) \geq f(z) + \nabla f(z)^\top \left[(1 - \theta)(x - z) + \theta (y - z)\right] \)
+  </p>
+
+  <p>Pero:</p>
+
+  <p style="text-align:center;">
+    \( (1 - \theta)(x - z) + \theta(y - z) = 0 \)
+  </p>
+
+  <p>Entonces:</p>
+
+  <p style="text-align:center;">
+    \( f(z) \leq (1 - \theta)f(x) + \theta f(y) ⟹ f((1 - \theta)x + \theta y) \leq (1 - \theta)f(x) + \theta f(y)\)
+  </p>
+
+  <p>Lo cual es exactamente la definición de convexidad.</p>
+
+  <p><strong>Queda entonces demostrada la proposición.</strong></p>
+
+</details>
 
   </div>
   
@@ -13975,109 +13954,72 @@ x = -\frac{1}{4}, \quad y = \frac{1}{2}, \quad z = \frac{3}{4}.
   </div><div class="inner_cell">
   <div class="text_cell_render border-box-sizing rendered_html">
 
-<p style="text-align: justify;"><strong>4. (15 puntos) Clasificador binario: Perceptrón</strong></p>
+<p style="text-align: justify;"><strong>4. (20 puntos) Descenso del gradiente</strong></p>
 
 <p style="text-align: justify;">
-En este problema trataremos el problema de clasificación binaria, es decir, determinar si un dato pertenece
-a una de dos clases.
+Considere el set de datos datos_lineales.csv que contiene pares de puntos
+$ (x,y) ∈ R^2$. Se busca
+ resolver el problema:
+
+ $$
+
+\min_{\theta \in \mathbb{R}^2} \; \frac{1}{2N} \left\| X\theta - y \right\|_2^2,
+\quad
+X \in \mathbb{R}^{N \times 2}, \quad
+y \in \mathbb{R}^N
+
+ $$
+
+donde $\theta$ son los coeficientes del polinomio lineal que mejor
+ ajusta la matriz de datos $X$ con los valores $y$.
+
 </p>
 
 <p style="text-align: justify;">
-<strong>a)</strong> Programe el algoritmo del Perceptrón. Puede ser útil construir en este caso una rutina</p>
-
-<pre>Perceptron_fit(X, y, nitmax, eta)</pre>
-
-<p style="text-align: justify;">
-que tome los datos <code>X</code>, sus etiquetas <code>y</code>, y que retorne los pesos <code>w</code> del clasificador.
-Otros hiperparámetros a considerar son <code>nitmax</code> y <code>eta</code> que corresponden respectivamente al número máximo de
-iteraciones del algoritmo y el <em>learning rate</em>.
+<strong>a)</strong> 
+ Programe el algoritmo de descenso de gradiente para resolver este problema. Considere como pará
+metros de este algoritmo: $X$, $y$, $NITMAX$, $gamma$ donde $NITMAX$ es el máximo número de iteraciones
+ y $gamma$ es la función tasa de aprendizaje.
 </p>
+
 
 <details>
-  <summary><span class="arrow">▶️</span> Ver respuesta</summary>
+  <summary><span class="arrow">▶️</span> Ver código principal</summary>
+
 
   <div class="tcolorbox">
-
-
-    <p style="text-align: justify;">
-
-  El algoritmo del perceptrón, tal como se presenta en la clase 2
-   del curso, incluye la siguiente ecuación para la
-    actualización de pesos:
-\[
-w^{(k+1)} = w^{(k)} - (y - \hat{y}) x_i,
-\]
-donde $y \in \{-1, 1\}$ es la etiqueta verdadera e
- \(\hat{y} = \text{sgn}(x_i^\top w)\) es la
-  predicción del modelo. Ahora, es posible notar que:
-
-$$
-y \in \{-1, 1\} \implies (y - \hat{y}) \in \{-2, 0, 2\}
-$$
-
-
-En consecuencia, si el 
- ejemplo es clasificado correctamente (\(y = \hat{y}\)),
-  la corrección es nula; si es clasificado erróneamente
-   (\(y \ne \hat{y}\)), la corrección queda como:
-   
-   \[
-w^{(k+1)} = w^{(k)} - 2y x_i,
-\]
-
-
-   lo que permite reescribir la 
-   regla de actualización como:
-\[
-w^{(k+1)} = w^{(k)}- \eta \cdot y \cdot x_i,
-\]
-absorbiendo el factor 2 en el valor del parámetro 
-\(\eta\) (<em>learning rate</em>).  
-</p>
-
-
-</div>
-
-  <div class="tcolorbox">
-    <p style="text-align: justify;"><strong>Implementación del algoritmo del Perceptrón:</strong></p>
+    <p style="text-align: justify;"><strong>Implementación del algoritmo para minimizar la función de costo:</strong></p>
 
     <pre><code>
-def Perceptron_fit(X, y, nitmax, eta):
-    # Cada x ∈ ℝⁿ⁻¹ debe ser aumentado con una entrada unitaria.
-    X_aug = np.hstack([X, np.ones((X.shape[0], 1))])
+def gradient_descent(X, y, NITMAX, gamma):
+    """
+    Algoritmo de descenso del gradiente para minimizar:
+        J(θ) = (1/2N) * ||Xθ - y||²
+    """
+    N = X.shape[0]
+    theta = np.zeros((2,))  # Inicializar parámetros en cero
+    history = []
 
-    # Inicializamos w = 0 ∈ ℝⁿ
-    w = np.zeros(X_aug.shape[1])
-    
-    # Guardamos el historial de w
-    historia = [w.copy()] 
+    for t in range(1, NITMAX + 1):
+        # Paso 1: cálculo del gradiente
+        y_pred = X @ theta
+        error = y_pred - y
+        grad = (1/N) * (X.T @ error)
 
-    # Bucle principal: hasta nitmax o convergencia
-    for _ in range(nitmax):
-        actualizado = False
-        for i in range(X_aug.shape[0]):
-            # Calcular ŷ = sgn(xᵢᵀ w)
-            y_pred = np.sign(np.dot(X_aug[i], w))
-            if y_pred == 0:
-                y_pred = -1  # por convención
+        # Paso 2: actualización con tasa dependiente de t
+        theta = theta - gamma(t) * grad
 
-            # Si está mal clasificado, actualizar pesos
-            if y_pred != y[i]:
-                # Aplicamos la regla de aprendizaje:
-                # w(k+1) = w(k) − η⋅y⋅xi,
-                w -= eta * y[i] * X_aug[i]
-                actualizado = True
-        historia.append(w.copy())
-        if not actualizado:
-            break  # convergió
+        # Paso 3: guardar el costo cada 10 iteraciones
+        if t % 10 == 0:
+            cost = (1/(2*N)) * np.linalg.norm(X @ theta - y)**2
+            history.append(cost)
 
-    return w, historia
+    return theta, history
 </code></pre>
 
     <p style="text-align: justify;">
-    Este proceso se repite por un número máximo de iteraciones, o hasta que los datos sean perfectamente clasificados
-    (en caso de que sean linealmente separables). Notar que por conveniencia, se aprovecha
-    de guardar el historial de pesos para ser usados más adelante.
+    Este proceso se repite por un número máximo de iteraciones. Notar que por conveniencia, se aprovecha
+    de guardar el historial para graficar covnergencia más adelante.
     </p>
   </div>
 </details>
@@ -14091,70 +14033,49 @@ def Perceptron_fit(X, y, nitmax, eta):
 
 
 <p style="text-align: justify;">
-  <strong>b)</strong> Programe una rutina que dado un vector de
-   pesos <code>w</code>, y un conjunto de datos <code>X</code> prediga
-   a qué conjunto de datos pertenece cada dato.
+  <strong>b)</strong>  Programe el algoritmo de descenso de gradiente estocástico para resolver este problema. Considere como pará
+metros de este algoritmo: $X$, $y$, $NITMAX$, $gamma$ donde $NITMAX$ es el máximo número de iteraciones
+ y $gamma$ es la función tasa de aprendizaje.
   </p>
   
   <details>
-    <summary><span class="arrow">▶️</span> Ver respuesta</summary>
+    <summary><span class="arrow">▶️</span> Ver código principal</summary>
   
     <div class="tcolorbox">
-      <p style="text-align: justify;">
-  
-        Durante el entrenamiento, se evalúa cada ejemplo individual \( x_i \in \mathbb{R}^n \) contra el vector de pesos \( w \in \mathbb{R}^n \) utilizando el producto escalar:
-        \[
-        \hat{y}_i = \operatorname{sgn}(x_i^\top w),
-        \]
-        lo cual produce una única predicción escalar para ese punto.
-         En cambio, para esta sección, se aprovechará de utilizar los datos
-         de entrada agrupados en una matriz
-        \[
-        X =
-        \begin{bmatrix}
-        x_1^\top \\
-        x_2^\top \\
-        \vdots \\
-        x_m^\top
-        \end{bmatrix}
-        \in \mathbb{R}^{m \times n},
-        \]
-        y se utiliza el producto matriz-vector:
-        \[
-        Xw =
-        \begin{bmatrix}
-        x_1^\top w \\
-        x_2^\top w \\
-        \vdots \\
-        x_m^\top w
-        \end{bmatrix}
-        \in \mathbb{R}^m.
-        \]
 
-        Esta formulación está basada en la definición de producto
-        matriz-vector y su interpretación lineal indicada en la clase 2 del curso.
-
-
-        Finalmente, se obtiene el vector de predicciones:
-        \[
-        \hat{y} = \operatorname{sgn}(Xw),
-        \]
-          
-  </p>
-  </div>
-  
-    <div class="tcolorbox">
+      Notar que en este caso, se considerará mayor variabilidad porque SGD actualizará con un solo punto por simplicidad, que si bien introduce
+      ruido estocástico, también ayuda a escapar de mínimos locales en problemas no convexos.
   
       <pre><code>
+def stochastic_gradient_descent(X, y, NITMAX, gamma):
+    """
+    Algoritmo de descenso de gradiente estocástico para minimizar:
+        J(θ) = (1/2N) * sum((x_i^T θ - y_i)^2)
+    """
+    N = X.shape[0]
+    theta = np.zeros((2,))
+    history = []
 
-def Perceptron_predict(w, X):
-    # Aumentar con entrada unitaria (sesgo)
-    X_aug = np.hstack([X, np.ones((X.shape[0], 1))])
-    
-    # Aplicar la regla: ŷ = sgn(Xw)
-    y_pred = np.sign(X_aug @ w)
-    y_pred[y_pred == 0] = -1 
-    return y_pred     
+    for t in range(1, NITMAX + 1):
+        # Paso 1: seleccionar un dato aleatorio
+        i = np.random.randint(N)
+        xi = X[i]
+        yi = y[i]
+
+        # Paso 2: calcular gradiente estocástico
+        y_pred_i = xi @ theta
+        error_i = y_pred_i - yi
+        grad_i = error_i * xi
+
+        # Paso 3: actualizar theta con tasa dependiente de t
+        theta = theta - gamma(t) * grad_i
+
+        # Paso 4: registrar costo cada 10 iteraciones
+        if t % 10 == 0:
+            cost = (1/(2*N)) * np.linalg.norm(X @ theta - y)**2
+            history.append(cost)
+
+    return theta, history 
   </code></pre>
   
     </div>
@@ -14163,33 +14084,24 @@ def Perceptron_predict(w, X):
 
 
 <p style="text-align: justify;">
-  <strong>c)</strong> Programe una rutina que dado un vector de
-   pesos <code>w</code>, un conjunto de datos <code>X</code>y sus
-    etiquetas <code>y</code>,
-  entregue un score de que tan bien clasificados están
-   los datos según las predicciones hechas por el
-  clasificador.
+  <strong>c)</strong> Considere las siguientes tasas de aprendizaje:
+
+$$
+\gamma(t) = \gamma_{clases}(t) = \frac{1}{a(t + k_0)}, \quad \gamma(t) = \frac{\gamma_0}{\log(t + c)}
+$$
+
+
+
   </p>
   
   <details>
-    <summary><span class="arrow">▶️</span> Ver respuesta</summary>
+    <summary><span class="arrow">▶️</span> Ver código completo</summary>
   
-    <div class="tcolorbox">
-      <p style="text-align: justify;">
-  
-  Para este caso simplemente se considerará el porcentaje
-  de detecciones correctas.  
-  </p>
-  </div>
   
     <div class="tcolorbox">
   
       <pre><code>
-def Perceptron_score(w, X, y):
-    # Hacemos uso de la función creada en b)
-    y_pred = Perceptron_predict(w, X)
-    score = (y_pred == y).mean() * 100
-    return score      
+def      
   </code></pre>
   
     </div>
@@ -14198,121 +14110,8 @@ def Perceptron_score(w, X, y):
 
 
 
-  <p style="text-align: justify;">
-    <strong>d)</strong> Use las bases de datos <em>datos1.csv</em>
-     y <em>datos2.csv</em>, grafique los datos identificando sus
-      respectivas etiquetas y junto a ellos el resultado del
-       hiperplano separador obtenido por su algoritmo de
-    Perceptrón.
-    </p>
-    
-
-
     <details>
-      <summary><span class="arrow">▶️</span> Ver funciones adicionales</summary>
-    
-      <div class="tcolorbox">
-    
-        <pre><code>
-import imageio.v2 as imageio
-import os
-import pandas as pd
-import matplotlib.pyplot as plt
-
-def cargar_y_preparar_datos(nombre_archivo):
-    # Leer el archivo CSV
-    df = pd.read_csv(nombre_archivo)
-
-    # Extraer variables y etiquetas
-    X = df[['x', 'y']].values
-    y = df['label'].values
-
-    # Convertir etiquetas de {0, 1} a {-1, 1}
-    y = 2 * y - 1
-
-    return X, y
-
-
-def generar_gif_hiperplano(X, y, historia, nombre_gif='perceptron.gif', duration=500, freeze_last=3):
-
-    filenames = []
-
-    for epoca, w in enumerate(historia):
-        fig, ax = plt.subplots(figsize=(6, 5))
-        ax.scatter(X[:, 0], X[:, 1], c=y, cmap='bwr', edgecolors='k', label='Datos')
-
-        x1_vals = np.linspace(X[:, 0].min() - 1, X[:, 0].max() + 1, 200)
-        if w[1] != 0:
-            x2_vals = -(w[0] * x1_vals + w[2]) / w[1]
-            ax.plot(x1_vals, x2_vals, 'k--', label='Hiperplano')
-        else:
-            x_vert = -w[2] / w[0]
-            ax.axvline(x=x_vert, color='k', linestyle='--', label='Hiperplano')
-
-        ax.set_title(f'Época {epoca}')
-        ax.set_xlim([-8, 8])
-        ax.set_ylim([-8, 8])
-        ax.grid(True)
-
-        filename = f'_frame_{epoca}.png'
-        filenames.append(filename)
-        plt.savefig(filename)
-        plt.close()
-
-    with imageio.get_writer(nombre_gif, mode='I', duration=duration, loop=0) as writer:
-        for i, filename in enumerate(filenames):
-            image = imageio.imread(filename)
-            writer.append_data(image)
-        
-        # Repetir el último frame algunas veces
-        for _ in range(freeze_last):
-            writer.append_data(image)
-
-
-    # Eliminar imágenes temporales
-    for filename in filenames:
-        os.remove(filename)
-
-    print(f"GIF generado: {nombre_gif}")
-    </code></pre>
-    
-      </div>
-    </details>
-
-
-
-    <details>
-      <summary><span class="arrow">▶️</span> Ver respuesta</summary>
-    
-      <div class="tcolorbox">
-        <p style="text-align: justify;">
-    
-    Geométricamente se interpreta el parámetro de aprendizaje $\eta$ como una cantidad que dirige el paso en la dirección opuesta al punto mal clasificado y 
-    se define $\eta$ como un valor negativo ($\eta < 0$), de modo
-     que el vector de pesos se actualiza en la dirección que
-      corrige la clasificación errónea. En este caso, se considerará
-      un $\eta = -0.01$ para representar pequeños pasos en la dirección opuesta.
-  </p>
-    </div>
-    
-      <div class="tcolorbox">
-    
-        <pre><code>
-# --- Para datos1.csv ---
-X1, y1 = cargar_y_preparar_datos('datos1.csv')
-w1, history1 = Perceptron_fit(X1, y1, nitmax=20, eta=-0.01)
-generar_gif_hiperplano(X1, y1, history1, nombre_gif='perceptron_datos1.gif')
-
-# --- Para datos2.csv ---
-X2, y2 = cargar_y_preparar_datos('datos2.csv')
-w2, history2 = Perceptron_fit(X2, y2, nitmax=20, eta=-0.01)
-generar_gif_hiperplano(X2, y2, history2, nombre_gif='perceptron_datos2.gif')    
-    </code></pre>
-    
-      </div>
-
-
-
+      <summary><span class="arrow">▶️</span> Ver gráfico</summary>
 
       <div class="tcolorbox" style="text-align: center;">
         <div style="display: inline-block; width: 48%;">
@@ -14321,7 +14120,7 @@ generar_gif_hiperplano(X2, y2, history2, nombre_gif='perceptron_datos2.gif')
         <div style="display: inline-block; width: 48%;">
           <img src="https://raw.githubusercontent.com/bahidalgo/MIA_Fundamentos-Matematicos-para-la-IA/refs/heads/main/perceptron/perceptron_datos2.gif" style="width: 100%;" alt="GIF datos2">
         </div>
-        <p><small><strong>Figura 6.</strong> Resultados algoritmo perceptron: Evolución del hiperplano separador durante el entrenamiento en <code>datos1.csv</code> (izquierda) y <code>datos2.csv</code> (derecha).</small></p>
+        <p><small><strong>Figura 2.</strong> pie de imagen 2.</small></p>
       </div>
 
 
@@ -14329,13 +14128,7 @@ generar_gif_hiperplano(X2, y2, history2, nombre_gif='perceptron_datos2.gif')
       <div class="tcolorbox">
         <p style="text-align: justify;">
     
-    La <em>Figura 6</em> indica la diferencia en el ajuste para ambos
-  datasets. Para el caso de <em>datos1.csv</em> es evidente que existe
-una recta que separa ambos conjuntos de datos y dos iteraciones son suficientes para
-encontrar dicha separación binaria. Sin embargo, para el caso de  <em>datos2.csv</em>
-la dispersión de los datos es tal que no existe una recta que logre
-separar en dos grupos de forma correcta, por ello, este algoritmo
-no es suficiente para enfrentarse a este tipo de casos.</p>
+    Comentarios figura 2.</p>
     </div>
 
     </details>
@@ -14344,127 +14137,22 @@ no es suficiente para enfrentarse a este tipo de casos.</p>
 
 
     <p style="text-align: justify;">
-      <strong>e)</strong> Cree 10 nuevos datos de la siguiente forma:
+      <strong>e)</strong>  Repita el item anterior pero ahora con el set de datos
+       datos_cuadraticos.csv. Notar que ahora
+ $X ∈ R^{N×2}$ y que $\theta ∈ R^2$.
       </p>
-
-
-<pre><code>
-numpy.random.seed(18)
-new_data = numpy.random.random(size=(10,2))
-new_data_labels = numpy.random.randint(2, size=10)    
-</code></pre>
-
-<p style="text-align: justify;">Para el primer set de datos, 
-  prediga la clase a la que pertenecen cada uno de sus datos 
-  con la función de predicción creada y calcule el <em>score</em>.
-   Grafique estos datos junto al conjunto inicial de datos y
-    discuta la capacidad predictora de este clasificador.</p>
-      
-      <details>
-        <summary><span class="arrow">▶️</span> Ver respuesta</summary>
-      
-        <div class="tcolorbox">
-          <p style="text-align: justify;">
-      
-            Primero se revisará cómo le fue en términos de score al primer dataset.
-      </p>
-      </div>
-      
-        <div class="tcolorbox">
-      
-          <pre><code>
-score = Perceptron_score(w1, X1, y1)
-print(f">Score sobre datos1.csv: {score:.2f}%")  
-      </code></pre>
-
-      <pre><code style="background-color: black; color: white; padding: 10px;">
->Score sobre datos1.csv: 100.00%
-          </code></pre>
-      
-        </div>
-
-        <p style="text-align: justify;">
-      
-Ya se había evidenciado en la <em>Figura 6</em> que la separación
-del hiperplano había sido correcta para todos los puntos dados, por
-ello, no es sorpresa el hecho de tener una precisión del 100%.   </p>
-
-      </details>
-
-
 
 
 
 
       <details>
-        <summary><span class="arrow">▶️</span> Ver código</summary>
+        <summary><span class="arrow">▶️</span> Ver código completo</summary>
       
-        <div class="tcolorbox">
-          <p style="text-align: justify;">
-      
-            Ahora,
-            se intentará validar si los pesos asignados <code>w1</code> clasifican
-            correctamente los puntos generados de manera aleatoria.       </p>
-      </div>
       
         <div class="tcolorbox">
       
           <pre><code>
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
-
-# Paso 1: Generar 10 nuevos datos y etiquetas
-np.random.seed(18)
-new_data = np.random.random(size=(10, 2))
-new_data_labels = np.random.randint(2, size=10)
-new_data_labels = 2 * new_data_labels - 1  # Convertir a {-1, 1}
-
-# Paso 2: Predecir las clases con el perceptrón entrenado en datos1
-predicciones = Perceptron_predict(w1, new_data)
-
-# Paso 3: Calcular el score
-score = Perceptron_score(w1, new_data, new_data_labels)
-print(f"Score sobre nuevos datos aleatorios: {score:.2f}%")
-
-# Paso 4: Graficar conjunto original + nuevos datos
-plt.figure(figsize=(8, 6))
-
-# Datos originales
-plt.scatter(X1[:, 0], X1[:, 1], c=y1, cmap='bwr', edgecolors='k', alpha=0.5, marker='o')
-
-# Nuevos datos clasificados
-plt.scatter(new_data[:, 0], new_data[:, 1], c=new_data_labels, cmap='bwr', edgecolors='k', s=100, marker='P')
-
-# Hiperplano
-x1_vals = np.linspace(-8, 8, 200)
-if w1[1] != 0:
-    x2_vals = -(w1[0] * x1_vals + w1[2]) / w1[1]
-    plt.plot(x1_vals, x2_vals, 'k--')
-else:
-    x_vert = -w1[2] / w1[0]
-    plt.axvline(x=x_vert, color='k', linestyle='--')
-
-# Crear leyenda personalizada (sin colores de clase)
-legend_elements = [
-    Line2D([0], [0], marker='o', color='w', label='Datos originales',
-           markerfacecolor='none', markeredgecolor='black', markersize=8),
-    Line2D([0], [0], marker='P', color='w', label='Nuevos datos',
-           markerfacecolor='none', markeredgecolor='black', markersize=10),
-    Line2D([0], [0], linestyle='--', color='black', label='Hiperplano')
-]
-
-plt.legend(handles=legend_elements, loc='upper right')
-
-filename = "perceptron_ajuste_datos_nuevos.jpg"
-# Ajustes visuales
-plt.xlabel("x")
-plt.ylabel("y")
-plt.xlim([-6, 6])
-plt.ylim([-6, 6])
-
-plt.grid(True)
-plt.savefig(filename)  
+>>>code
       </code></pre>
       
         </div>
@@ -14481,27 +14169,14 @@ plt.savefig(filename)
 
         <div class="tcolorbox">
           <img src="https://raw.githubusercontent.com/bahidalgo/MIA_Fundamentos-Matematicos-para-la-IA/refs/heads/main/perceptron/perceptron_ajuste_datos_nuevos.jpg" style="width: 80%;" alt="Figura 3">
-          <p><small><strong>Figura 7.</strong> Resultados de Perceptrón entrenado con datos1.csv sobre los datos nuevos generados de forma aleatoria.</small></p>
+          <p><small><strong>Figura 3.</strong> pie figura3.</small></p>
         </div>
 
-        <pre><code style="background-color: black; color: white; padding: 10px;">
-          >Score sobre nuevos datos aleatorios: 60.00%
-                    </code></pre>
 
         <div class="tcolorbox">
           <p style="text-align: justify;">
       
-            Es posible notar que el hiperplano no se ajusta correctamente a los nuevos datos generados, de hecho, se evidencia, que solo el 60% de los puntos aleatorios son clasificados correctamente.
-            Esto sucede
-            debido a que los nuevos puntos fueron generados de forma aleatoria y no respetan necesariamente la distribución
-            original de los datos usados para entrenar el modelo, además, están ubicados
-            en un espacio local alrededor de $[0, 1] \times [0, 1]$ lo cual deja a todos
-            los datos a un lado de la frontera de decisión. Todo ello conlleva a una nueva estructura
-            que el perceptrón no pudiese haber aprendido anteriormente al momento de ajustar los pesos $w_1$.
-            Estos resultados son esperables, dado que el modelo no tiene la capacidad de adaptarse a nuevos
-            contextos sin ser reentrenado de forma apropiada con el nuevo conjunto de datos, lo que no implica
-            que el modelo esté incorrecto, sino que su capacidad predictiva está limitada por el dominio en que
-            fue entrenado. Esto es característico de cualquier modelo supervisado. 
+            comentarios defigura 3 
       </div>
 
 
@@ -14546,194 +14221,47 @@ plt.savefig(filename)
   </div><div class="inner_cell">
   <div class="text_cell_render border-box-sizing rendered_html">
 
-<p style="text-align: justify;"><strong>5. (5 puntos) Descomposición en valores singulares.</strong></p>
+<p style="text-align: justify;"><strong>5. (10 puntos)  Bonus: Algoritmo de mediana aleatoria.</strong></p>
 
 <p style="text-align: justify;">
-Muestre que para \( A \in \mathbb{R}^{m \times n} \) con valores singulares \( \sigma_1, \ldots, \sigma_p \), donde \( p = \min\{m, n\} \), su norma de Frobenius satisface la identidad:
-</p>
-
-<p style="text-align: center;">
-\[
-\|A\|_F = \sqrt{\sigma_1^2 + \cdots + \sigma_p^2}.
-\]
-</p>
-
-<p style="text-align: justify;">
-Verifique que la identidad anterior se cumple para la siguiente matriz:
-</p>
-
-<p style="text-align: center;">
-\[
-A = \begin{bmatrix}
-4 & 1 & 0 \\
-1 & 4 & 1 \\
-0 & 1 & 4
-\end{bmatrix}
-\]
-</p>
-
-<details>
-<summary><span class="arrow">▶️</span> Ver demostración</summary>
-
-<div class="tcolorbox">
+Programe el algoritmo mediana aleatoria visto en clases. Realice experimentos aleatorios y muestre
+evidencia de que el algoritmo calcula con éxito la mediana de una lista.</p>
 
 
-  <p style="text-align: justify;">
-  Sea \( A \in \mathbb{R}^{m \times n} \) una matriz de rango \( p = \min\{m,n\} \), con descomposición en valores singulares \( A = U \Sigma V^T \), donde \( \Sigma \in \mathbb{R}^{m \times n} \) contiene en su diagonal los valores singulares \( \sigma_1, \ldots, \sigma_p \).
-  </p>
-  
-  <p style="text-align: justify;">
-  La norma de Frobenius de \( A \) está definida como:
-  \[
-  \|A\|_F^2 = \sum_{i=1}^m \sum_{j=1}^n a_{ij}^2.
-  \]
-  Notar que lo anterior se obtiene elevando al cuadrado la expresión para la norma definida en la clase 2. Luego, el objetivo es demostrar que:
-  \[
-  \|A\|_F^2 = \sigma_1^2 + \sigma_2^2 + \cdots + \sigma_p^2.
-  \]
-  </p>
-
-
-  
-  <p style="text-align: justify;">
-  Usando la descomposición \( A = \sum_{k=1}^p \sigma_k u_k v_k^T \), donde \( u_k \in \mathbb{R}^m \) y \( v_k \in \mathbb{R}^n \) son vectores ortonormales, se tiene que cada entrada de \( A \) se puede escribir como:
-  \[
-  a_{ij} = \sum_{k=1}^p \sigma_k (u_k)_i (v_k)_j.
-  \]
-  Entonces:
-  \[
-  \|A\|_F^2 = \sum_{i=1}^m \sum_{j=1}^n \left( \sum_{k=1}^p \sigma_k (u_k)_i (v_k)_j \right)^2.
-  \]
-  </p>
-  
-  <p style="text-align: justify;">
- Se expande el cuadrado:
-  \[
-  \|A\|_F^2 = \sum_{i=1}^m \sum_{j=1}^n \sum_{k=1}^p \sum_{\ell=1}^p \sigma_k \sigma_\ell (u_k)_i (v_k)_j (u_\ell)_i (v_\ell)_j.
-  \]
-  Reordenando las sumas:
-  \[
-  \|A\|_F^2 = \sum_{k=1}^p \sum_{\ell=1}^p \sigma_k \sigma_\ell \left( \sum_{i=1}^m (u_k)_i (u_\ell)_i \right) \left( \sum_{j=1}^n (v_k)_j (v_\ell)_j \right).
-  \]
-  </p>
-  
-  <p style="text-align: justify;">
-    Dado que \( \{u_k\} \) y \( \{v_k\} \) son conjuntos ortonormales, se cumple por lo visto en la clase 3 que:
-    \[
-    u_k^T u_\ell =
-    \begin{cases}
-    1 & \text{si } k = \ell \\
-    0 & \text{si } k \ne \ell
-    \end{cases}
-    \quad\text{y}\quad
-    v_k^T v_\ell =
-    \begin{cases}
-    1 & \text{si } k = \ell \\
-    0 & \text{si } k \ne \ell
-    \end{cases}
-    \]
-    </p>
-    <p style="text-align: justify;">
-   Por lo tanto, todos los términos con \( k \ne \ell \) se anulan, y sólo sobreviven los términos con \( k = \ell \).
-
-    \[
-  \|A\|_F^2 = \sum_{k=1}^p  \sigma_k \sigma_k \left( \sum_{i=1}^m (u_k)^2_i \right) \left( \sum_{j=1}^n (v_k)^2_j \right).
-  \]
-
-  \[
-  \|A\|_F^2 = \sum_{k=1}^p \sigma_k \sigma_k \left( 1 \right) \left( 1 \right).
-  \]
-</p>
-    <p style="text-align: justify;">
-    Lo que lleva a la siguiente expresión:
-    \[
-    \|A\|_F^2 = \sum_{k=1}^p \sigma_k^2.
-    \]
-    </p>
-  
-  <p style="text-align: justify;">
-  Finalmente, tomando raíz cuadrada a ambos lados:
-  \[
-  \|A\|_F = \sqrt{\sigma_1^2 + \cdots + \sigma_p^2},
-  \]
-  lo cual demuestra la identidad deseada.
-  </p>
-  
-
-</div>
-
-</details>
 
 
 
 <details>
-  <summary><span class="arrow">▶️</span> Ver verificación de propiedad</summary>
+  <summary><span class="arrow">▶️</span> Ver código completo</summary>
   
   <div class="tcolorbox">
   
     <p style="text-align: justify;">
-      Primero, se calcula la norma de Frobenius directamente desde los elementos de la matriz:
+      Se realizará el siguiente ejercicio:
       </p>
       
       <p style="text-align: center;">
-      \[
-      \|A\|_F^2 = 4^2 + 1^2 + 0^2 + 1^2 + 4^2 + 1^2 + 0^2 + 1^2 + 4^2 = 52
-      \quad \Rightarrow \quad \|A\|_F = \sqrt{52}.
-      \]
+      blabla1
       </p>
       
       <p style="text-align: justify;">
-      Luego, al calcular los valores singulares de \( A \) (se usa <code>np.linalg.svd()</code>), obteniendo:
+      blabla2      
       </p>
       
       <pre><code>
-import numpy as np
-
-A = np.array([
-    [4, 1, 0],
-    [1, 4, 1],
-    [0, 1, 4]
-])
-
-# Calcular norma de Frobenius directamente
-frobenius = np.linalg.norm(A, ord='fro')
-print(f"Norma de Frobenius: {frobenius:.4f}")
-
-# Calcular valores singulares
-sigma = np.linalg.svd(A, compute_uv=False)
-print("Valores singulares:", sigma)
-
-# Verificar identidad
-print("Suma de cuadrados de los σ_i:", np.sum(sigma**2))
+>>>code
       </code></pre>
 
     
       
       <pre><code style="background-color: black; color: white; padding: 10px;">
-Norma de Frobenius: 7.2111
-Valores singulares: [5.41421356 4.         2.58578644]
-Suma de cuadrados de los σ_i: 52.0
+salida del codigo si es necesario, no sé aún
                         </code></pre>
 
 
 
 
-      <p style="text-align: center;">
-      \[
-      \sigma_1 \approx 5.414, \quad \sigma_2 \approx 4.000, \quad \sigma_3 \approx 2.586.
-      \]
-      </p>
-      
-      <p style="text-align: justify;">
-      Por lo tanto:
-      \[
-      \sigma_1^2 + \sigma_2^2 + \sigma_3^2 \approx  51.999 \approx 52.
-      \]
-      </p>
-      
-      <p style="text-align: justify;">
-      Lo cual se condice con la identidad demostrada anteriormente.
-      </p>
+  
       
   
   </div>
@@ -14742,249 +14270,6 @@ Suma de cuadrados de los σ_i: 52.0
 
 
 
-
-
-</div>
-</div>
-
-</div>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div tabindex="-1" id="notebook" class="border-box-sizing">
-  <div class="container" id="notebook-container">
-  
-  <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-  </div><div class="inner_cell">
-  <div class="text_cell_render border-box-sizing rendered_html">
-
-    <p style="text-align: justify;"><strong>6. (15 puntos) Análisis de componentes principales (PCA).</strong></p>
-
-    <p style="text-align: justify;">
-    Considere nuevamente la base de datos de imágenes de dígitos de <strong>MNIST</strong>.
-    </p>
-    
-    <p style="text-align: justify;">
-    <strong>a)</strong> Calcule la descomposición en valores singulares de la matriz asociada a los datos utilizando la función <code>svd</code> de la librería <code>numpy.linalg</code>.
-    </p>
-    
-
-    <details>
-      <summary><span class="arrow">▶️</span> Ver código</summary>
-
-      <p style="text-align: justify;">
-        Dado que el objetivo final es utilizar PCA, se debe considerar el primer paso base para ello indicado en la clase 3: centrar los datos.
-        </p>
-      
-      <div class="tcolorbox">
-        <pre><code>
-from tensorflow.keras.datasets import mnist
-import numpy as np
-import matplotlib.pyplot as plt
-
-# Cargar MNIST desde Keras
-(X_train, y_train), (_, _) = mnist.load_data()
-
-# Aplanar imágenes y normalizar
-X = X_train.reshape((X_train.shape[0], -1)).astype(np.float32) / 255.0
-
-# Seleccionar una muestra pequeña
-sample_size = 10000
-X = X[:sample_size]
-
-# Centrar los datos (restar la media por columna)
-X_centered = X - np.mean(X, axis=0)
-
-# Aplicar SVD
-U, S, Vt = np.linalg.svd(X_centered, full_matrices=False)
-
-# Mostrar resultados
-print(">Valores singulares (primeros 10):")
-print(S[:10])
-          
-        </code></pre>
-      </div>
-
-      <pre><code style="background-color: black; color: white; padding: 10px;">
->Valores singulares (primeros 10):
-[231.9641   195.09741  179.54262  169.02258  158.72963  152.58649
- 131.59483  124.264366 121.201744 110.32571 ]
-                  </code></pre>
-
-    </details>
-
-
-    <p style="text-align: justify;">
-      <strong>b)</strong> Utilice la <code>SVD</code> para reducir la dimensión de los datos a la mitad, es decir, realice un análisis de componentes principales.
-      </p>
-      
-      <details>
-        <summary><span class="arrow">▶️</span> Ver código</summary>
-      
-        <p style="text-align: justify;">
-          En la clase 3 se explicó que reducir la dimensión mediante PCA equivale a proyectar los datos centrados sobre los primeros vectores singulares (componentes principales) que capturan la mayor varianza. Notar que $V^t$ contiene los vectores ortogonales en el espacio de columnas, es decir, justamente las direcciones principales de los datos. En este caso, se tomará los primeros 32 vectores ya que los datos originales tienen dimensión 64.
-        </p>
-      
-        <div class="tcolorbox">
-          <pre><code>
-# Elegimos la mitad de la dimensión original
-k = int(X_centered.shape[1]/2)
-
-# Proyección sobre los primeros k vectores singulares
-X_reducido = X_centered @ Vt[:k].T
-
-# Confirmar dimensiones
-print("Forma original:", X_centered.shape)
-print("Forma reducida:", X_reducido.shape)
-          </code></pre>
-        </div>
-      
-        <pre><code style="background-color: black; color: white; padding: 10px;">
-Forma original: (10000, 64)
-Forma reducida: (10000, 32)
-        </code></pre>
-      
-      </details>
-
-
-
-
-      <p style="text-align: justify;">
-        <strong>c)</strong> Grafique 10 imágenes y sus respectivas proyecciones una vez realizado el análisis de componentes principales.
-        </p>
-        
-        <details>
-          <summary><span class="arrow">▶️</span> Ver código</summary>
-        
-          <p style="text-align: justify;">
-            Para visualizar los efectos de la reducción de dimensión mediante PCA, se grafican las imágenes originales junto con su reconstrucción
-            utilizando los primeros 32 componentes principales.
-          </p>
-        
-          <div class="tcolorbox">
-            <pre><code>
-
-# Reconstrucción aproximada de los datos
-X_reconstruido = X_reducido @ Vt[:k]
-
-# Graficar las primeras 10 imágenes originales y sus proyecciones
-fig, axs = plt.subplots(2, 10, figsize=(15, 4))
-for i in range(10):
-    axs[0, i].imshow(X_centered[i].reshape(28, 28), cmap='gray')
-    axs[0, i].axis('off')
-    axs[0, i].set_title("Original")
-
-    axs[1, i].imshow(X_reconstruido[i].reshape(28, 28), cmap='gray')
-    axs[1, i].axis('off')
-    axs[1, i].set_title("PCA")
-
-plt.suptitle("Comparación: Original vs Proyección PCA (k=32)", fontsize=14)
-plt.tight_layout()
-plt.show()
-            </code></pre>
-          </div>
-        </details>
-        
-      <details>
-        <summary><span class="arrow">▶️</span> Ver gráfico</summary>
-      
-
-        <div class="tcolorbox">
-          <img src="https://raw.githubusercontent.com/bahidalgo/MIA_Fundamentos-Matematicos-para-la-IA/refs/heads/main/PCA/mnist_pca32.png" style="width: 80%;" alt="Figura 3">
-          <p><small><strong>Figura 8.</strong> Comparación datos MNIST. Arriba imágenes originales, abajo proyección PCA (k=32).</small></p>
-        </div>
-
-
-        <p style="text-align: justify;">
-          El resultado obtenido en la <em>Figura 8</em> es un indicio de que las primeras 32 componentes almacenan gran 
-          parte de la información relevante (varianza).
-        </p>
-
-      </details>
-
-
-
-
-
-      <p style="text-align: justify;">
-        <strong>d)</strong> Para los datos proyectados, calcule nuevamente su algoritmo de <em>clustering</em> y compare con los resultados obtenidos en la pregunta 2.
-        </p>
-        
-        <details>
-          <summary><span class="arrow">▶️</span> Ver código</summary>
-        
-          <p style="text-align: justify;">
-          Se aplica nuevamente el algoritmo de <code>k-means</code> sobre los datos reducidos con PCA.
-          </p>
-        
-          <div class="tcolorbox">
-            <pre><code>
-# Semilla reproducible
-current_seed = 0
-np.random.seed(current_seed)
-k = 20
-Z0 = X_reconstruido[np.random.choice(X_reconstruido.shape[0], k, replace=False)]
-
-# Ejecutar k-means con 15 iteraciones
-centroids, labels, objective_history = k_means_fit(X_reconstruido, Z0, 15)
-
-# Gráfico de centroides y ejemplos
-plot_representatives_and_samples(centroids, X_reconstruido, labels)
-            </code></pre>
-          </div>
-        
-          <div class="tcolorbox">
-            <img src="https://raw.githubusercontent.com/bahidalgo/MIA_Fundamentos-Matematicos-para-la-IA/refs/heads/main/PCA/mnist_centroids_and_examples.png" style="width: 80%;" alt="Figura 3">
-            <p><small><strong>Figura 9.</strong> Nueva clasificación MNIST utilizando proyección PCA (k=32).</small></p>
-          </div>
-
-
-          <p style="text-align: justify;">
-Al comparar la <em>Figura 9 </em> con la <em>Figura 4 </em> es evidente que gran parte de los clúster siguen siendo los mismos. De hecho, el representante
-del grupo 16 sigue manifestando una gran varianza en su conjunto debido a la baja identificación visual del dígito. Todo lo anterior valida la gran capacidad de PCA para comprimir sin perder datos significativos</p>
-
-
-        </details>
 
 
 </div>
