@@ -60,19 +60,34 @@ costos_clase = promedio_costos_sgd(X, y, NITMAX, gamma_fn=gamma_fn_clase)
 _, costos_det_log = gradient_descent(X, y, NITMAX, gamma=gamma_fn_log)
 _, costos_det_clase = gradient_descent(X, y, NITMAX, gamma=gamma_fn_clase)
 
-# --------------------------------------------
-# Graficar convergencia promedio del costo
-# --------------------------------------------
-plt.figure(figsize=(10, 6))
-plt.plot(costos_log, label='SGD γ_log', alpha=0.8)
-plt.plot(costos_clase, label='SGD γ_clases', alpha=0.8)
-plt.plot(costos_det_log, label='GD γ_log', alpha=0.8, linestyle='--', linewidth=2)
-plt.plot(costos_det_clase, label='GD γ_clases', alpha=0.8, linestyle='--', linewidth=2)
 
-plt.xlabel("Iteraciones")
-plt.ylabel("Costo promedio")
-plt.title("Convergencia promedio del costo en 100 ejecuciones")
-plt.legend()
-plt.grid(True)
+# --------------------------------------------
+# Graficar comparación de tasas: SGD vs GD
+# --------------------------------------------
+fig, axs = plt.subplots(1, 2, figsize=(14, 6))
+
+# --------- SUBPLOT 1: SGD -----------------
+axs[0].plot(costos_log, label='SGD γ_log', alpha=0.9)
+axs[0].plot(costos_clase, label='SGD γ_clases', alpha=0.9)
+axs[0].set_xlabel("Iteraciones")
+axs[0].set_ylabel("Costo promedio")
+axs[0].set_title("SGD con distintas ambas tasas")
+axs[0].legend()
+axs[0].grid(True)
+axs[0].set_ylim(0, 0.5) 
+
+# --------- SUBPLOT 2: GD ------------------
+axs[1].plot(costos_det_log, label='GD γ_log', alpha=0.9)
+axs[1].plot(costos_det_clase, label='GD γ_clases', alpha=0.9)
+axs[1].set_xlabel("Iteraciones")
+axs[1].set_ylabel("Costo promedio")
+axs[1].set_title("GD determinista con ambas tasas")
+axs[1].legend()
+axs[1].grid(True)
+axs[1].set_ylim(0, 0.5) 
+
 plt.tight_layout()
+plt.savefig("comparacion_tasas.png", dpi=300)  # Guarda la imagen
 plt.show()
+
+   
